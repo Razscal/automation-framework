@@ -91,4 +91,4 @@ if __name__ == "__main__":
     # Outlook.SendMailMessage("pqvinh2@cmcglobal.vn;pqvinh3@cmcglobal.vn", body="Test email", subject="Test subject", attachments=["C:\\Users\\ADMIN\\Pictures\\Screenshot 2020-10-05 030949.png"])
     messages = Outlook.GetMailMessages()
     for message in messages:
-        pass
+        print(message)
