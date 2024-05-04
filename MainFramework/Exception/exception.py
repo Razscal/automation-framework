@@ -1,23 +1,43 @@
+import os
+from dotenv import load_dotenv
+from MainFramework.Common.logger import Logger
+import logging
+
 class SystemException(Exception):
     """
         The exception happens during initialization and get transaction data
     """
-    def __init__(self, *args):
+    logger = Logger()
+    def __init__(self ,*args):
         super().__init__(*args)
     
-    @staticmethod
-    def raise_exception(exception: Exception) -> None:
+    @classmethod
+    def raise_exception(cls, exception: Exception) -> None:
+        """
+            Raise system exception
+            -exception: exception retrieves from sub-function
+        """
         # Send email or perform other advanced exception handling
-        print(exception)
+        
+        Logger.error(str(exception))
+        os._exit(1)
 
 class BusinessException(Exception):
     """
         The exception happens when facing any errors during automation
     """
+
     def __init__(self, *args):
         super().__init__(*args)
 
-    @staticmethod
-    def raise_exception(exception: Exception) -> None:
+    @classmethod
+    def raise_exception(cls, exception: Exception) -> None:
+        """
+            Raise business exception
+            -exception: exception retrieves from sub-function
+        """
         # Send email or perform other advanced exception handling
-        print(exception)
+        Logger.error((str(exception)))
+        os._exit(1)
+        
+        
