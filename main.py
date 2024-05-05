@@ -11,7 +11,7 @@ class Main:
 
     __config = {}
     load_dotenv()
-    Logger()
+    # Logger()
 
     def __init__(self) -> None:
         pass

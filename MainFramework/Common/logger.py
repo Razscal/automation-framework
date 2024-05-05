@@ -40,14 +40,14 @@ class Logger:
         formatter = logging.Formatter(self.format_type)
         handler = logging.FileHandler(filename=self.file_path)
         handler.setFormatter(formatter)
-        #Logger.__logger.addHandler(hdlr= handler)
+        self.__logger.addHandler(hdlr= handler)
 
     def __base_config_logger(self) -> None:
         """
             Set up baseConfig for logging
             Return: None
         """
-        logging.basicConfig(level=logging.INFO, format=self.format_type, filename=self.file_path, filemode=self.file_mode)
+        logging.basicConfig(level=logging.INFO, format=self.format_type)
 
     @staticmethod
     def trace_exception(msg: str) -> None:

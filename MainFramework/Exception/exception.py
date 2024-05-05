@@ -19,7 +19,7 @@ class SystemException(Exception):
         """
         # Send email or perform other advanced exception handling
         
-        Logger.error(str(exception))
+        cls.logger.error(str(exception))
         os._exit(1)
 
 class BusinessException(Exception):
