@@ -1,5 +1,5 @@
 import win32com.client as client
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 class Outlook:
     '''
@@ -24,7 +24,7 @@ class Outlook:
     def __GetFolder(
                     self,
                     folder_name: str, 
-                    account_address: str = None
+                    account_address: Optional[str] = None
                     ):
         '''
             Retrieve Outlook folder object
@@ -44,20 +44,19 @@ class Outlook:
             raise e
     
     @staticmethod
-    def DeleteMailMessage(mail_item) -> Tuple[bool, str]:
+    def DeleteMailMessage(mail_item):
         """
             Delete Email message
                 -mail_item: email that exists in Outlook folder
         """
         try:
             mail_item.Delete()
-            return True, ""
         except Exception as e:
             error_message = f'Error deleteing mail message: {e}'
             raise Exception(error_message)
         
     @staticmethod    
-    def MarkAsReadUnread(mail_item, mark_unread: bool) -> Tuple[bool, str]:
+    def MarkAsReadUnread(mail_item, mark_unread: bool):
         '''
             Mark mail message as read/unread:
                 - mail_item: MailItem object
@@ -65,7 +64,6 @@ class Outlook:
         '''
         try:
             mail_item.UnRead = mark_unread
-            return True, ""
         except Exception as e:
             error_message = f'Error marking message as read/unread: {e}'
             raise Exception(error_message)
@@ -73,12 +71,12 @@ class Outlook:
     def SendMailMessage(
                         self,
                         mailTo: str, 
-                        mailFrom: str = None, 
-                        mailCC: str = None,
-                        subject: str = None,
-                        body: str = None,
-                        attachments: List[str] = [],
-                        isBodyHtml: bool = False
+                        mailFrom: Optional[str] = None, 
+                        mailCC: Optional[str] = None,
+                        subject: Optional[str] = None,
+                        body: Optional[str] = None,
+                        attachments: Optional[List[str]] = [],
+                        isBodyHtml: Optional[str] = False
                         ) -> Tuple[bool, str]:
         '''
             Send email using Outlook:
@@ -123,12 +121,12 @@ class Outlook:
 
     def GetMailMessages(
                         self,
-                        account_address: str = None, 
-                        folder_name: str = "Inbox", 
-                        max_mail_count: int = 10,
-                        filter: str = None, 
-                        unread_only: bool = True,
-                        sortby_receive_time: bool = True
+                        account_address: Optional[str] = None, 
+                        folder_name: Optional[str] = "Inbox", 
+                        max_mail_count: Optional[int] = 10,
+                        filter: Optional[str] = None, 
+                        unread_only: Optional[bool] = True,
+                        sortby_receive_time: Optional[bool] = True
                         ) -> list:
         '''
             Retrieve list of mail messages
@@ -172,8 +170,8 @@ class Outlook:
                         self, 
                         mail_item, 
                         dest_folder: str, 
-                        folder_account: str = None
-                        ) -> Tuple[bool, str]:
+                        folder_account: Optional[str] = None
+                        ):
         '''
             Move mail message to target folder
                 - mail_item: mail message item
@@ -183,7 +181,6 @@ class Outlook:
         try:
             folder = self.__GetFolder(dest_folder, account_address = folder_account)
             mail_item.Move(folder)
-            return True, ""
         except Exception as e:
             error_message = f'Error moving mail message to {dest_folder}: {e}'
             raise Exception(error_message)

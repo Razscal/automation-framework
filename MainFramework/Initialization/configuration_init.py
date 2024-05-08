@@ -23,7 +23,7 @@ class ConfigurationInit(AbsInitializor):
             df = pd.read_excel(in_config_path, sheet_name= 'CONFIG_VALUE')
             for index, row in df.iterrows():
                 key = row['Key']
-                value = row['Value1']
+                value = row['Value']
                 cls.config[key] = value
             return cls.config
         except Exception as e:
