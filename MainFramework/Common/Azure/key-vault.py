@@ -33,7 +33,7 @@ class AzureKeyVault:
             error_message = f"Couldn't authenticate key vault {self.vault_url}, due to:\n {e}"
             raise Exception(error_message)
 
-    def GetSecret(
+    def get_secret(
                     self, 
                     secret_name: str, 
                     secret_version: Optional[str] = None, 
@@ -52,7 +52,7 @@ class AzureKeyVault:
             error_message = f"Couldn't retrieve secret {secret_name} from {self.vault_url}, due to:\n {e}"
             raise Exception(error_message)
 
-    def SetSecret(
+    def set_secret(
                     self, 
                     secret_name: str, 
                     secret_value: str, 
@@ -72,7 +72,7 @@ class AzureKeyVault:
             error_message = f"Couldn't retrieve secret {secret_name} from {self.vault_url}, due to:\n {e}"
             raise Exception(error_message)
         
-    def DeleteSecret(
+    def delete_secret(
                         self, 
                         secret_name: str, 
                         **kwargs
@@ -84,7 +84,7 @@ class AzureKeyVault:
         try:
             client = self.__auth()
             poller = client.begin_delete_secret(secret_name, **kwargs)
-            deleted_secret = poller.result()
+            poller.result()
         except Exception as e:
             error_message = f"Couldn't delete secret {secret_name} from {self.vault_url}, due to:\n {e}"
             raise Exception(error_message)
