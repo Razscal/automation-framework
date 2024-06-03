@@ -1,4 +1,3 @@
-import os
 from enum import Enum
 from typing import List, Optional, Tuple
 from azure.servicebus import (
@@ -34,7 +33,7 @@ class AzureServiceBus:
             error_message = f"Couldn't connect to service bus"
             raise Exception(error_message)
     
-    def SendMessageToQueue(
+    def send_messages_to_queue(
                             self, 
                             queue_name: str, 
                             queue_messages: list,
@@ -42,7 +41,7 @@ class AzureServiceBus:
                             sender: Optional[ServiceBusSender] = None
                             ) -> ServiceBusSender:
         '''
-            Send a message to a specific queue
+            Send (a) message(s) to a specific queue
 
             queue_name: name of target queue to send message to
             queue_messages: list of messages to send to queue
@@ -71,7 +70,7 @@ class AzureServiceBus:
             error_message = f"Couldn't send message to queue {queue_name}. due to:\n {e}"
             raise Exception(error_message)
     
-    def ReceiveQueueMessages(
+    def receive_queue_messages(
                             self, 
                             queue_name: str, 
                             number_of_messages: int = 1, 
@@ -106,7 +105,7 @@ class AzureServiceBus:
             error_message = f"Couldn't receive message from queue {queue_name}. due to:\n {e}"
             raise Exception(error_message)
 
-    def SettleQueueMessage(
+    def settle_queue_message(
                             self,
                             receiver: ServiceBusReceiver, 
                             queue_message: ServiceBusReceivedMessage,

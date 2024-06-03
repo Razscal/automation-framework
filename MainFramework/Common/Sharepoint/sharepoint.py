@@ -73,8 +73,9 @@ class Sharepoint:
         try:
             for file_relative_url in file_relative_urls:
                 self.download_file(file_relative_url, local_folder_dest)
-        except:
-            print("Couldn't download multiple files")
+        except Exception as e:
+            error_message = f"Couldn't download multiple files, due to {e}"
+            raise Exception(error_message)
     
     def download_all_files_in_subfolder(self, local_folder_dest: str, folder_relative_url: str):
         try:
@@ -92,7 +93,7 @@ class Sharepoint:
             folder = ctx.web.get_folder_by_server_relative_url(target_url)
 
             with open(local_file_path, "rb") as f:
-                file = folder.files.upload(f).execute_query()
+                folder.files.upload(f).execute_query()
             print(f"Upload {local_file_path} to {target_url} successfully")
         except Exception as e:
             error_message = f"Upload {local_file_path} to {relative_url} unsuccessfully, due to:\n {e}"

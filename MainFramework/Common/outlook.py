@@ -6,10 +6,10 @@ class Outlook:
         Automate Outlook tasks
     '''
     def __init__(self) -> tuple:
-        self.ol, self.namespace, self.default_account = self.__GetOutlookConfig()
+        self.ol, self.namespace, self.default_account = self.__get_outlook_config()
     
     @staticmethod
-    def __GetOutlookConfig() -> tuple:
+    def __get_outlook_config() -> tuple:
         '''
             Initialize connection to Outlook, return a tuple for Application object, namespace object, default account
         '''
@@ -19,9 +19,10 @@ class Outlook:
             default_account = ol.Session.Accounts[0]
             return  ol, namespace, default_account
         except Exception as e:
-            raise e
+            error_message = f"Couldn't get outlook config, due to {e}"
+            raise Exception(error_message)
     
-    def __GetFolder(
+    def __get_folder(
                     self,
                     folder_name: str, 
                     account_address: Optional[str] = None
@@ -41,10 +42,11 @@ class Outlook:
             folder = root_folder.Folders(folder_name)
             return folder
         except Exception as e:
-            raise e
+            error_message = f"Couldn't retreive folder object {folder_name}, due to:\n {e}"
+            raise Exception(error_message)
     
     @staticmethod
-    def DeleteMailMessage(mail_item):
+    def delete_mail_message(mail_item):
         """
             Delete Email message
                 -mail_item: email that exists in Outlook folder
@@ -52,11 +54,11 @@ class Outlook:
         try:
             mail_item.Delete()
         except Exception as e:
-            error_message = f'Error deleteing mail message: {e}'
+            error_message = f'Error deleteing mail message, due to:\n {e}'
             raise Exception(error_message)
         
     @staticmethod    
-    def MarkAsReadUnread(mail_item, mark_unread: bool):
+    def mark_as_read_unread(mail_item, mark_unread: bool):
         '''
             Mark mail message as read/unread:
                 - mail_item: MailItem object
@@ -65,43 +67,44 @@ class Outlook:
         try:
             mail_item.UnRead = mark_unread
         except Exception as e:
-            error_message = f'Error marking message as read/unread: {e}'
+            error_message = f'Error marking message as read/unread, due to:\n {e}'
             raise Exception(error_message)
 
-    def SendMailMessage(
+    def send_mail_message(
                         self,
-                        mailTo: str, 
-                        mailFrom: Optional[str] = None, 
-                        mailCC: Optional[str] = None,
+                        mail_to: str, 
+                        mail_from: Optional[str] = None, 
+                        mail_cc: Optional[str] = None,
                         subject: Optional[str] = None,
                         body: Optional[str] = None,
                         attachments: Optional[List[str]] = [],
-                        isBodyHtml: Optional[str] = False
+                        is_body_html: Optional[str] = False
                         ) -> Tuple[bool, str]:
         '''
             Send email using Outlook:
-                - mailFrom (str): account used to send email
-                - mailTo (str): reciepent(s)' email address
-                - mailCC (str): reciepent(s)' email address for CC
+                - mail_from (str): account used to send email
+                - mail_to (str): reciepent(s)' email address
+                - mail_cc (str): reciepent(s)' email address for CC
                 - subject (str): email's subject
                 - body (str): email's body
                 - attachments (list): list of attachments
+                - is_body_html: to convert plain text body to html format
         '''
         try:
             mail_item = self.ol.CreateItem(0)
 
             # Add mail item information
-            used_account_address = self.default_account if (mailFrom == None or mailFrom == "") else self.namespace.Session.Accounts.Item(mailFrom)
+            used_account_address = self.default_account if (mail_from == None or mail_from == "") else self.namespace.Session.Accounts.Item(mail_from)
             mail_item._oleobj_.Invoke(*(64209, 0, 8, 0, used_account_address))
             if mail_item.SendUsingAccount == None or mail_item.SendUsingAccount.DisplayName == "":
-                return False, f'Can not find {mailFrom} or any default account'
+                return False, f'Can not find {mail_from} or any default account'
             
-            mail_item.To = mailTo
-            mail_item.CC = mailCC if (mailCC != None and mailCC != "") else ""
+            mail_item.To = mail_to
+            mail_item.CC = mail_cc if (mail_cc != None and mail_cc != "") else ""
             mail_item.Subject = subject if (subject != None and subject != "") else ""
 
             if body != None and body != "":
-                if isBodyHtml:
+                if is_body_html:
                     mail_item.HTMLBody = body
                 else:
                     mail_item.Body =body
@@ -116,10 +119,10 @@ class Outlook:
             
             return True, ""
         except Exception as e:
-            error_message = f"Error sending email: {e}"
+            error_message = f"Error sending email, due to:\n {e}"
             raise Exception(error_message)   
 
-    def GetMailMessages(
+    def get_mail_messages(
                         self,
                         account_address: Optional[str] = None, 
                         folder_name: Optional[str] = "Inbox", 
@@ -142,7 +145,7 @@ class Outlook:
             else:
                 used_account_address = account_address
 
-            folder = self.__GetFolder(folder_name, account_address = used_account_address)
+            folder = self.__get_folder(folder_name, account_address = used_account_address)
 
             # Retrieve messages
             combined_filter = ""
@@ -163,10 +166,10 @@ class Outlook:
 
             return list(messages)[:max_mail_count-1] if len(messages) >= max_mail_count else list(messages)
         except Exception as e:
-            error_message = f'Error retrieving mail messages from {folder_name}: {e}'
+            error_message = f'Error retrieving mail messages from {folder_name}, due to:\n {e}'
             raise Exception(error_message)
 
-    def MoveMailMessage(
+    def move_mail_message(
                         self, 
                         mail_item, 
                         dest_folder: str, 
@@ -179,8 +182,8 @@ class Outlook:
                 - folder_account: target account that stores target folder
         '''
         try:
-            folder = self.__GetFolder(dest_folder, account_address = folder_account)
+            folder = self.__get_folder(dest_folder, account_address = folder_account)
             mail_item.Move(folder)
         except Exception as e:
-            error_message = f'Error moving mail message to {dest_folder}: {e}'
+            error_message = f'Error moving mail message to {dest_folder}, due to:\n {e}'
             raise Exception(error_message)
